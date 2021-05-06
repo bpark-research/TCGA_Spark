@@ -1,0 +1,97 @@
+version: "3"
+services:
+  spark:
+    image: jupyter/pyspark-notebook
+    container_name: pyspark
+    ports:
+      - "8888:8888"
+      - "4040:4040"
+      - "4041:4041"
+      - "4042:4042"
+
+    expose:
+      - "8888"
+      - "4040"
+      - "4041"
+      - "4042"
+
+    environment:
+      CHOWN_HOME: "yes"
+      GRANT_SUDO: "yes"
+      NB_UID: 1000
+      NB_GID: 100
+      SPARK_OPTS: "--driver-java-options=-Xms8g --driver-java-options=-Xmx16g --driver-java-options=-Dlog4j.logLevel=info"
+    deploy:
+     replicas: 1
+     restart_policy:
+       condition: on-failure
+    volumes:
+      - /Users/bpark/Projects/TCGA_Spark/work:/home/jovyan/work
+      - /Users/bpark/Projects/TCGA_Spark/code:/home/jovyan/code
+      - /Users/bpark/Projects/TCGA_Spark/data:/home/jovyan/data
+
+  cassandra-0:
+    image: cassandra:latest
+    restart: always    
+    ports:
+      - 7000:7000
+      - 9042:9042
+    volumes:
+      - /Users/bpark/cassandra/node-0/commitlog:/var/lib/cassandra/commitlog
+      - /Users/bpark/cassandra/node-0/hints:/var/lib/cassandra/hints
+      - /Users/bpark/cassandra/node-0/data:/var/lib/cassandra/data
+      - /Users/bpark/cassandra/node-0/saved_caches:/var/lib/cassandra/saved_caches
+      - /Users/bpark/cassandra/node-0/logs:/var/log/cassandra
+    environment:
+      - CASSANDRA_SEEDS=cassandra-0
+      - CASSANDRA_CLUSTER_NAME=cluster
+      - CASSANDRA_NUM_TOKENS=8
+      - CASSANDRA_DC=dc1
+      - CASSANDRA_RACK=rack0
+      - CASSANDRA_ENDPOINT_SNITCH=GossipingPropertyFileSnitch
+      - MAX_HEAP_SIZE=8G
+      - HEAP_NEWSIZE=200M
+
+  cassandra-1:
+    image: cassandra:latest    
+    restart: always
+    ports:
+      - 1700:7000
+      - 19042:9042
+    volumes:
+      - /Users/bpark/cassandra/node-1/data:/var/lib/cassandra/data
+      - /Users/bpark/cassandra/node-1/commitlog:/var/lib/cassandra/commitlog
+      - /Users/bpark/cassandra/node-1/hints:/var/lib/cassandra/hints
+      - /Users/bpark/cassandra/node-1/saved_caches:/var/lib/cassandra/saved_caches
+      - /Users/bpark/cassandra/node-1/logs:/var/log/cassandra
+    environment:
+      - CASSANDRA_SEEDS=cassandra-0
+      - CASSANDRA_CLUSTER_NAME=cluster
+      - CASSANDRA_NUM_TOKENS=8
+      - CASSANDRA_DC=dc1
+      - CASSANDRA_RACK=rack0
+      - CASSANDRA_ENDPOINT_SNITCH=GossipingPropertyFileSnitch      
+      - MAX_HEAP_SIZE=8G
+      - HEAP_NEWSIZE=200M
+
+  cassandra-2:
+    image: cassandra:latest
+    restart: always    
+    ports:
+      - 27000:7000
+      - 29042:9042
+    volumes:
+      - /Users/bpark/cassandra/node-2/data:/var/lib/cassandra/data
+      - /Users/bpark/cassandra/node-2/commitlog:/var/lib/cassandra/commitlog
+      - /Users/bpark/cassandra/node-2/hints:/var/lib/cassandra/hints
+      - /Users/bpark/cassandra/node-2/saved_caches:/var/lib/cassandra/saved_caches
+      - /Users/bpark/cassandra/node-2/logs:/var/log/cassandra      
+    environment:
+      - CASSANDRA_SEEDS=cassandra-0
+      - CASSANDRA_CLUSTER_NAME=cluster
+      - CASSANDRA_NUM_TOKENS=8
+      - CASSANDRA_DC=dc1
+      - CASSANDRA_RACK=rack0
+      - CASSANDRA_ENDPOINT_SNITCH=GossipingPropertyFileSnitch
+      - MAX_HEAP_SIZE=8G
+      - HEAP_NEWSIZE=200M
