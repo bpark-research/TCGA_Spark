@@ -10,7 +10,7 @@ dataset: gene expression RNAseq - RSEM tpm [download][RNAseqTPM]</br>
 dataset: phenotype - TCGA TARGET GTEX selected phenotypes [download][phenotype]</br>
 dataset: phenotype - TCGA survival data [download][survival]</br>
 
-<strike>[ToDO1]</strike>: spark setting -> run docker.sh</br>
+<strike>[ToDO1]</strike>: spark setting -> docker-compose up -d</br>
 <strike>[ToDO2]</strike>: select GTEx breast -> code/01 select GTEx breast.ipynb</br>
 ToDO3: compute pearson correlation coefficient (PCC) in GTEx breast (Gene1, Gene2)</br>
 ToDO4: compute a p-value of PCC in GTEx breast (Gene1, Gene2)</br>
